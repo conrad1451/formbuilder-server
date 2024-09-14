@@ -76,11 +76,30 @@ app.get('/users', async (req, res)=>{
     // app.get('/users', (req, res)=>{
     // CHQ: This is hard coded. might cause issues 
     const myUser = User.findOne({email: 'testuser@gmail.com'});
+    const hasUsers = User.length > 0
     // FIXME: terminal yelled "TypeError: Converting circular structure to JSON" stackoverflow" 
     // res.send(JSON.stringify(myUser)); 
     // Let's try returning just the email
-    console.log(myUser);
-    res.send("Success")
+    // console.log(myUser);
+    // res.send("Success")
+
+    if(hasUsers)
+    {
+        // for (let index = 0; index < User.length; ++index) {
+            const stringifiedList = [];
+
+        for (let index = 0; index < User.length; index++) {
+            const curUser = User[index];
+
+            stringifiedList.push(JSON.stringify(curUser));
+            
+        }
+        res.send(stringifiedList);
+    }
+    else
+    {
+        res.send("There are no users in the database!")
+    }
 })
 
 app.get('/', (req, res)=>{
