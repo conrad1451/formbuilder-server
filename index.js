@@ -103,18 +103,24 @@ app.get('/users', async (req, res)=>{
 
 
     // console.
+    console.log("Hi")
     console.error("testing something")
-    console.error(db.collection.name)
-    // CHQ: error msg: db.collection.count(function (err, count)  is not a function
-    db.collection.count(function (err, count) {
-        if (!err && count === 0) {
-            // populateDB();
-            res.send("should populateDB")
-        }
-        else{
-            res.send("I dont know what to do")
-        }
-}); //[2]
+    // console.error(db.collection.name)
+    // console.error(db.collection) // result is: [Function (anonymous)]
+    console.error(db)
+     // CHQ: error msg: db.collection.count(function (err, count)  is not a function
+    // db.collection.count(function (err, count) {
+    //     if (!err && count === 0) {
+    //         // populateDB();
+    //         res.send("should populateDB")
+    //     }
+    //     else{
+    //         res.send("I dont know what to do")
+    //     }
+    // }); //[2]
+    // res.send("The DB collection name is" + String(db.collection.name)) // db collection name is blank
+    res.send("The DB collection name is" + db.collection.name);
+    // res.send("The DB collection name is" + db.collection.name);
 })
 
 app.get('/', (req, res)=>{
