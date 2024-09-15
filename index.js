@@ -1,6 +1,6 @@
 // source: 
-// [1]https://www.programiz.com/javascript/examples/generate-random-strings 
-
+// [1]: https://www.programiz.com/javascript/examples/generate-random-strings 
+// [2]: https://stackoverflow.com/questions/16743729/mongodb-find-if-a-collection-is-empty-node-js
 require('dotenv').config();
 const User = require("./models/Users");
 
@@ -83,23 +83,38 @@ app.get('/users', async (req, res)=>{
     // console.log(myUser);
     // res.send("Success")
 
-    if(hasUsers)
-    {
-        // for (let index = 0; index < User.length; ++index) {
-            const stringifiedList = [];
+    // if(hasUsers)
+    // {
+    //     // for (let index = 0; index < User.length; ++index) {
+    //         const stringifiedList = [];
 
-        for (let index = 0; index < User.length; index++) {
-            const curUser = User[index];
+    //     for (let index = 0; index < User.length; index++) {
+    //         const curUser = User[index];
 
-            stringifiedList.push(JSON.stringify(curUser));
+    //         stringifiedList.push(JSON.stringify(curUser));
             
+    //     }
+    //     res.send(stringifiedList);
+    // }
+    // else
+    // {
+    //     res.send("There are no users in the database!")
+    // }
+
+
+    // console.
+    console.error("testing something")
+    console.error(db.collection.name)
+    // CHQ: error msg: db.collection.count(function (err, count)  is not a function
+    db.collection.count(function (err, count) {
+        if (!err && count === 0) {
+            // populateDB();
+            res.send("should populateDB")
         }
-        res.send(stringifiedList);
-    }
-    else
-    {
-        res.send("There are no users in the database!")
-    }
+        else{
+            res.send("I dont know what to do")
+        }
+}); //[2]
 })
 
 app.get('/', (req, res)=>{
