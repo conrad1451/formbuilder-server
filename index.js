@@ -9,6 +9,7 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bcrypt= require("bcrypt");
+const Users = require('./models/Users');
 
 
 app.use(cors())
@@ -67,6 +68,7 @@ app.get('/mytestpage', async (req, res)=>{
 
     // save the user to the database
     await user.save();
+    await user.updateOne("k", "k", "l")
 
     res.send("Hello");
 })
@@ -75,8 +77,23 @@ app.get('/users', async (req, res)=>{
 
     // app.get('/users', (req, res)=>{
     // CHQ: This is hard coded. might cause issues 
-    const myUser = User.findOne({email: 'testuser@gmail.com'});
-    const hasUsers = User.length > 0
+    // const myUser = User.findOne({email: 'testuser@gmail.com'});
+    // const hasUsers = User.length > 0
+
+
+    const firstUserFound = User.findOne({email: 'k7nti@gmail.com'});
+    const secondUserFound = User.findOne({email: 'yv7rl@gmail.com'});
+
+    const allFOund = [firstUserFound, secondUserFound];
+
+    let foundString = "";
+
+    allFOund.forEach(element => {
+        // foundString += element.username;
+        foundString += element.username;
+    });
+
+    // db.users.find()
     // FIXME: terminal yelled "TypeError: Converting circular structure to JSON" stackoverflow" 
     // res.send(JSON.stringify(myUser)); 
     // Let's try returning just the email
@@ -107,7 +124,7 @@ app.get('/users', async (req, res)=>{
     console.error("testing something")
     // console.error(db.collection.name)
     // console.error(db.collection) // result is: [Function (anonymous)]
-    console.error(db)
+    // console.error(db)
      // CHQ: error msg: db.collection.count(function (err, count)  is not a function
     // db.collection.count(function (err, count) {
     //     if (!err && count === 0) {
@@ -119,8 +136,13 @@ app.get('/users', async (req, res)=>{
     //     }
     // }); //[2]
     // res.send("The DB collection name is" + String(db.collection.name)) // db collection name is blank
-    res.send("The DB collection name is" + db.collection.name);
     // res.send("The DB collection name is" + db.collection.name);
+    // res.send("The DB collection name is" + db.collection.name);
+    console.error(firstUserFound);
+
+    // res.send("all the users found are" + foundString); // chq; didnt work
+    // res.send("size of the users collection is" + String(test.users.totalSize())) // test is not defined
+    res.send("size of the users collection is" + String(db.users.totalSize())) // test is not defined
 })
 
 app.get('/', (req, res)=>{
