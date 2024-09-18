@@ -68,10 +68,16 @@ app.get('/mytestpage', async (req, res)=>{
 
     // save the user to the database
     await user.save();
-    await user.updateOne("k", "k", "l")
+    // await user.updateOne("k", "k", "l")
 
     res.send("Hello");
 })
+
+app.post("/signup", async (req, res) => {
+    const myData = req.body;
+    //console.log();
+    console.log(myData);
+    })
 
 app.get('/users', async (req, res)=>{
 
