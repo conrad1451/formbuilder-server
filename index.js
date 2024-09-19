@@ -77,6 +77,20 @@ app.post("/signup", async (req, res) => {
     const myData = req.body;
     //console.log();
     console.log(myData);
+
+    // FIXME: CHQ: the following lines (createdUser and saving it) fail because "TypeError: Cannot read properties of undefined (reading 'username')"
+    const createdUser = new User({
+        username: myData.username,
+        email: myData.email,
+        // username: 'myusername',
+        // email: 'testuser@gmail.com',
+        password: myData.password
+        // password: hashedPass,
+        // password: "testpass",
+    });
+
+    await createdUser.save();
+
     })
 
 app.get('/users', async (req, res)=>{
