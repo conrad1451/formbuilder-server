@@ -39,7 +39,17 @@ app.use(helmet());
 // })
 // module.exports = mongoose.model("User", userSchema);
 
-mongoose.connect(process.env.MONGODB_CONNECTION);
+// all mognodb connetiton and the 4 alternatives can connect to mongodb
+// mongoose.connect(process.env.MONGODB_CONNECTION);
+
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT1);
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT2);
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT3);
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT4); // MongoServerError: Invalid namespace specified 'test/.users'
+ mongoose.connect(process.env.MONGODB_CONNECTION_ALT5);
+
+
+// mongoose.connect(process.env.MONGODB_CONNECTION_TEST_DB);
 
 const db = mongoose.connection;
 
@@ -71,11 +81,11 @@ app.get('/mytestpage', async (req, res)=>{
         // password: "testpass",
     });
 
-    // save the user to the database
+    // save the user to the database -> THIS SAVES IT TO THE USER DATABASE
     await user.save();
     // await user.updateOne("k", "k", "l")
 
-    res.send("Hello");
+    res.send("Added new user via get request (not the way to do it, lol)");
 })
 
 app.post("/signup", async (req, res) => {
