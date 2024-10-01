@@ -23,7 +23,7 @@ app.use(helmet());
 // mongoose.connect(process.env.MONGODB_CONNECTION);
 mongoose.connect(process.env.MONGODB_CONNECTION_ALT);
 
-const db = mongoose.connection;
+const db = mongoose.connection; 
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
