@@ -147,6 +147,7 @@ app.get('/users', async (req, res)=>{
     // console.
     console.log("Hi")
     console.error("testing something")
+    console.error("\n\n\n\n\n\n\n\n\n\n\n\n")
     // console.error(db.collection.name)
     // console.error(db.collection) // result is: [Function (anonymous)]
     // console.error(db)
@@ -167,7 +168,9 @@ app.get('/users', async (req, res)=>{
 
     // res.send("all the users found are" + foundString); // chq; didnt work
     // res.send("size of the users collection is" + String(test.users.totalSize())) // test is not defined
-    res.send("size of the users collection is" + String(db.users.totalSize())) // test is not defined
+    // res.send("size of the users collection is" + String(db.users.totalSize())) // test is not defined
+    res.send("size of the users collection is" + String(db.users))
+
 })
 
 app.get('/', (req, res)=>{
