@@ -11,7 +11,9 @@ const mongoose = require("mongoose");
 const bcrypt= require("bcrypt");
 const Users = require('./models/Users');
 
+app.use(helmet());
 
+// CHQ: not sure if I need the below line
 app.use(cors())
 
 // const userSchema = new mongoose.Schema({
