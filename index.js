@@ -17,7 +17,7 @@ const helmet = require("helmet");
 app.use(helmet());
 
 // CHQ: not sure if I need the below line
-app.use(cors())
+// app.use(cors())
 
 // const userSchema = new mongoose.Schema({
 //     username:{
