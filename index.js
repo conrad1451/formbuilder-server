@@ -11,8 +11,13 @@ const mongoose = require("mongoose");
 const bcrypt= require("bcrypt");
 const Users = require('./models/Users');
 
+const helmet = require("helmet");
 
-app.use(cors())
+
+app.use(helmet());
+
+// CHQ: not sure if I need the below line
+// app.use(cors())
 
 // const userSchema = new mongoose.Schema({
 //     username:{
@@ -34,7 +39,17 @@ app.use(cors())
 // })
 // module.exports = mongoose.model("User", userSchema);
 
-mongoose.connect(process.env.MONGODB_CONNECTION);
+// all mognodb connetiton and the 4 alternatives can connect to mongodb
+// mongoose.connect(process.env.MONGODB_CONNECTION);
+
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT1);
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT2);
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT3);
+// mongoose.connect(process.env.MONGODB_CONNECTION_ALT4); // MongoServerError: Invalid namespace specified 'test/.users'
+ mongoose.connect(process.env.MONGODB_CONNECTION_ALT5);
+
+
+// mongoose.connect(process.env.MONGODB_CONNECTION_TEST_DB);
 
 const db = mongoose.connection;
 
@@ -66,11 +81,11 @@ app.get('/mytestpage', async (req, res)=>{
         // password: "testpass",
     });
 
-    // save the user to the database
+    // save the user to the database -> THIS SAVES IT TO THE USER DATABASE
     await user.save();
     // await user.updateOne("k", "k", "l")
 
-    res.send("Hello");
+    res.send("Added new user via get request (not the way to do it, lol)");
 })
 
 app.post("/signup", async (req, res) => {
@@ -142,6 +157,7 @@ app.get('/users', async (req, res)=>{
     // console.
     console.log("Hi")
     console.error("testing something")
+    console.error("\n\n\n\n\n\n\n\n\n\n\n\n")
     // console.error(db.collection.name)
     // console.error(db.collection) // result is: [Function (anonymous)]
     // console.error(db)
@@ -162,7 +178,9 @@ app.get('/users', async (req, res)=>{
 
     // res.send("all the users found are" + foundString); // chq; didnt work
     // res.send("size of the users collection is" + String(test.users.totalSize())) // test is not defined
-    res.send("size of the users collection is" + String(db.users.totalSize())) // test is not defined
+    // res.send("size of the users collection is" + String(db.users.totalSize())) // test is not defined
+    res.send("size of the users collection is" + String(db.users))
+
 })
 
 app.get('/', (req, res)=>{
