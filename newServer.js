@@ -3,21 +3,14 @@
 
 // testing routing found in express.js docs
 
-require('dotenv').config();
-const User = require("./models/Users");
+require('dotenv').config(); 
 
 const express = require("express");
-const app = express();
-const cors = require("cors");
-const mongoose = require("mongoose");
-const bcrypt= require("bcrypt");
-const Users = require('./models/Users');
+const app = express(); 
 
 const helmet = require("helmet");
 const birds = require('./birds')
-
-// ...
-
+ 
 app.use('/birds', birds)
 
 
