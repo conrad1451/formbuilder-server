@@ -16,6 +16,11 @@ const helmet = require("helmet");
 
 
 app.use(helmet());
+// https://dev.to/mccauley/accepting-data-from-a-form-and-saving-it-to-mongodb-through-mongoose-47i3
+// app.use(express.urlencoded({extended: true}))
+
+//  📌 Set the view engine to ejs 
+// app.set("view engine", "ejs")
 
 // CHQ: not sure if I need the below line
 // app.use(cors())
