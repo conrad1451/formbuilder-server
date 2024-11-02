@@ -9,7 +9,7 @@ const express = require("express");
 const app = express(); 
 
 const helmet = require("helmet");
-const birds = require('./birds')
+const birds = require('./pageRoutes/birds')
  
 app.use('/birds', birds)
 
