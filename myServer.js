@@ -24,8 +24,15 @@ app.use(helmet());
 // CHQ: not sure if I need the below line
 // app.use(cors())
  
-// mongoose.connect(process.env.MONGODB_CONNECTION);
-mongoose.connect(process.env.MONGODB_CONNECTION_ALT);
+
+// CHQ: format of mongoDB connection string:
+// default database "test": prefix+suffix
+// specific database: prefix+"DBNAME"suffix
+// "DBNAME is a placeholder for the name of the database that you want to access"
+
+// mongoose.connect(process.env.MONGODB_CONNECTION_DEFAULT);
+mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET);
+ 
 
 const db = mongoose.connection; 
 
@@ -45,9 +52,37 @@ app.get('/mysecondtestpage', async (req,res) =>{
 
     res.send("Hello");
 })
+app.get('/mytestpage', async (req, res)=>{
+    // const nonhashedPass = "password"; // CHQ: for testing in case the hash causes issues
+    const randomUsername = Math.random().toString(36).substring(2,7); //[1]
+    // const randomEmail = randomUsername + "@gmail.com";
+    const randomEmail = String(randomUsername + "@gmail.com");
  
+    const randomPass = String(randomUsername + "pass");
+ 
+    // const randomEmail = (Math.random().toString(36).substring(2,7);
+
+    const user = new User({
+        username: randomUsername,
+        email: randomEmail,
+        // username: 'myusername',
+        // email: 'testuser@gmail.com',
+        password: randomPass
+        // password: hashedPass,
+        // password: "testpass",
+    });
+
+    // save the user to the database -> THIS SAVES IT TO THE USER DATABASE
+    await user.save();
+    // TypeError: user.insertOne is not a function
+    // await user.insertOne();
+    // await user.updateOne("k", "k", "l")
+
+    res.send("Added new user via get request (not the way to do it, lol)");
+})
+,
 app.get('/', (req, res)=>{
-    res.send('Hello from the SECOND server of Conrad');
+    res.send('Hello from the MONGODB server of Conrad');
 })
 
 app.listen(process.env.PORT, () =>{
