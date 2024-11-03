@@ -3,13 +3,12 @@
 // [2]: https://stackoverflow.com/questions/16743729/mongodb-find-if-a-collection-is-empty-node-js
 require('dotenv').config();
 const User = require("./models/Users");
-const MyModel = require("./models/TestModel")
+const MyModel = require("./models/TestModel") 
 
 const express = require("express");
 const app = express();
 // const cors = require("cors");
 const mongoose = require("mongoose");
-const bcrypt= require("bcrypt");
 // const Users = require('./models/Users');
 
 const helmet = require("helmet");

@@ -11,7 +11,6 @@ const router = express.Router();
 
 // const cors = require("cors");
 const mongoose = require("mongoose");
-const bcrypt= require("bcrypt");
 // const Users = require('./models/Users');
 
 const helmet = require("helmet");
@@ -28,7 +27,7 @@ router.use(helmet());
 // router.use(cors())
  
 // mongoose.connect(process.env.MONGODB_CONNECTION);
-mongoose.connect(process.env.MONGODB_CONNECTION_ALT);
+mongoose.connect(process.env.MONGODB_CONNECTION);
    
 const db = mongoose.connection; 
 
@@ -36,6 +35,35 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
     console.log("Connected to MongoDB");
 });
+
+router.get('/mytestpage', async (req, res)=>{
+    // const nonhashedPass = "password"; // CHQ: for testing in case the hash causes issues
+    const hashedPass = await bcrypt.hash("password", 10);   
+
+    const randomUsername = Math.random().toString(36).substring(2,7); //[1]
+    // const randomEmail = randomUsername + "@gmail.com";
+    const randomEmail = String(randomUsername + "@gmail.com");
+ 
+    const randomPass = String(randomUsername + "pass");
+ 
+    // const randomEmail = (Math.random().toString(36).substring(2,7);
+
+    const user = new User({
+        username: randomUsername,
+        email: randomEmail,
+        // username: 'myusername',
+        // email: 'testuser@gmail.com',
+        password: randomPass
+        // password: hashedPass,
+        // password: "testpass",
+    });
+
+    // save the user to the database -> THIS SAVES IT TO THE USER DATABASE
+    await user.save();
+    // await user.updateOne("k", "k", "l")
+
+    res.send("Added new user via get request (not the way to do it, lol)");
+})
 
 router.get('/mysecondtestpage', async (req,res) =>{
     const randomString = Math.random().toString(36).substring(2,7); //[1]
