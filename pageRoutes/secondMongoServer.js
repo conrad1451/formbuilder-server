@@ -38,8 +38,6 @@ db.once('open', () => {
 
 router.get('/mytestpage', async (req, res)=>{
     // const nonhashedPass = "password"; // CHQ: for testing in case the hash causes issues
-    const hashedPass = await bcrypt.hash("password", 10);   
-
     const randomUsername = Math.random().toString(36).substring(2,7); //[1]
     // const randomEmail = randomUsername + "@gmail.com";
     const randomEmail = String(randomUsername + "@gmail.com");
