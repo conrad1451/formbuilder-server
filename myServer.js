@@ -31,7 +31,7 @@ app.use(helmet());
 // "DBNAME is a placeholder for the name of the database that you want to access"
 
 // mongoose.connect(process.env.MONGODB_CONNECTION_DEFAULT);
-mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET);
+mongoose.connect(String(process.env.MONGODB_CHOSENDB_TARGET));
  
 
 const db = mongoose.connection; 
