@@ -31,8 +31,17 @@ app.use(helmet());
 // "DBNAME is a placeholder for the name of the database that you want to access"
 
 // mongoose.connect(process.env.MONGODB_CONNECTION_DEFAULT);
-mongoose.connect(String(process.env.MONGODB_CHOSENDB_TARGET));
- 
+
+// works on my machine but not when deployed to onrender
+mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET);
+
+// mongoose.connect(String(process.env.MONGODB_CHOSENDB_TARGET));
+
+// (node:42028) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+// mongoose.connect(String(process.env.MONGODB_CHOSENDB_TARGET), {
+//   useNewUrlParser: "true",
+//   useUnifiedTopology: "true"
+// });
 
 const db = mongoose.connection; 
 
