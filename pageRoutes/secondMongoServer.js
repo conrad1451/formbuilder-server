@@ -26,8 +26,10 @@ router.use(helmet());
 // CHQ: not sure if I need the below line
 // router.use(cors())
  
-// mongoose.connect(process.env.MONGODB_CONNECTION);
-mongoose.connect(process.env.MONGODB_CONNECTION);
+// mongoose.connect(process.env.MONGODB_CONNECTION_DEFAULT);
+
+// works on my machine but not when deployed to onrender
+mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET);
    
 const db = mongoose.connection; 
 
