@@ -13,6 +13,9 @@ const birds = require('./pageRoutes/birds')
 const myMongoDB = require('./pageRoutes/secondMongoServer')
  
 app.use('/birds', birds)
+
+// CHQ: The below can still do the same CRUD operations as
+// if the code were in the server file being run
 app.use('/database', myMongoDB)
  
 
