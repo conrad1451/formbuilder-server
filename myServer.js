@@ -27,10 +27,18 @@ app.use(helmet());
 
 // CHQ: not sure if I need the below line
 // app.use(cors())
-app.use(cors({
-    origin: "https://localhost:3000" // Replace with your frontend origin
-    // origin: "http://localhost:3000" // Replace with your frontend origin
-  }));
+
+const corsOptions = {
+    origin: 'https://formbuilder-frontend.vercel.app/',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
+// app.use(cors({
+//     origin: "https://localhost:3000" // Replace with your frontend origin
+//     // origin: "http://localhost:3000" // Replace with your frontend origin
+//   }));
+
+app.use(cors(corsOptions));
 
 // app.use((req, res, next) => {
 //     res.setHeader(
