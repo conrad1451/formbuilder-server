@@ -23,7 +23,11 @@ app.use(helmet());
 // app.use(express.urlencoded({extended: true}))
 
 //  📌 Set the view engine to ejs 
-// app.set("view engine", "ejs")
+app.set("view engine", "ejs")
+app.set('views', __dirname + '/views'); // Set the directory for views
+// https://www.google.com/search?q=boilerplate+html+for+expresjs+server&client=firefox-b-1-d&sca_esv=2c272caab9e83ec0&ei=E3oxZ8PEEK-g5NoP4_PmyQM&ved=0ahUKEwiDmuKnq9OJAxUvEFkFHeO5OTkQ4dUDCA8&oq=boilerplate+html+for+expresjs+server&gs_lp=Egxnd3Mtd2l6LXNlcnAiJGJvaWxlcnBsYXRlIGh0bWwgZm9yIGV4cHJlc2pzIHNlcnZlckgAUABYAHAAeAGQAQCYAQCgAQCqAQC4AQzIAQCYAgCgAgCYAwDiAwUSATEgQJIHAKAHAA&sclient=gws-wiz-serp
+// While Express.js itself doesn't directly serve HTML files, you'll typically use a templating engine like EJS, Pug, or Handlebars to generate HTML dynamically. Here's a basic example using EJS:
+
 
 // CHQ: not sure if I need the below line
 // app.use(cors())
@@ -38,45 +42,51 @@ const corsOptions = {
 //     // origin: "http://localhost:3000" // Replace with your frontend origin
 //   }));
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
-// app.use((req, res, next) => {
-//     res.setHeader(
-//       "Access-Control-Allow-Origin",
-//       "https://react-api-use-test-2.vercel.app"
-//     );
-//     res.setHeader(
-//         "Access-Control-Allow-Origin",
-//         "https://localhost:3000/login"
-//         "http://localhost:3000/login"
-//       );
-//     res.setHeader(
-//       "Access-Control-Allow-Origin",
-//       "*"
-//     );
-//     //   res.setHeader(
-//     //   "Access-Control-Allow-Origin",
-//     //   *  
-//     // ); // resulted in "unexpected token"
-//     // res.setHeader(
-//     //   "Access-Control-Allow-Methods",
-//     //   "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
-//     // );
-//     res.setHeader(
-//       "Access-Control-Allow-Methods",
-//       "GET,POST,OPTIONS"
-//     );
-//     res.setHeader(
-//       "Access-Control-Allow-Headers",
-//       "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-//     );
-//     res.setHeader("Access-Control-Allow-Credentials", true);
-//     res.setHeader("Access-Control-Allow-Private-Network", true);
-//     //  Firefox caps this at 24 hours (86400 seconds). Chromium (starting in v76) caps at 2 hours (7200 seconds). The default value is 5 seconds.
-//     res.setHeader("Access-Control-Max-Age", 7200);
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors/CORSMultipleAllowOriginNotAllowed
+//  More than one Access-Control-Allow-Origin header was sent by the server. This isn't allowed. 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://formbuilder-frontend.vercel.app/"
+  ); 
+  // res.setHeader(
+  //   "Access-Control-Allow-Origin",
+  //   "http://localhost:3000"
+  // ); 
+
+  // res.setHeader(
+    //   "Access-Control-Allow-Origin",
+    //   ["https://react-api-use-test-2.vercel.app", "http://localhost:3000"]
+    // ); 
+    // res.setHeader(
+    //   "Access-Control-Allow-Origin",
+    //   "*"
+    // );
+    //   res.setHeader(
+    //   "Access-Control-Allow-Origin",
+    //   *  
+    // ); // resulted in "unexpected token"
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
+    );
+    // res.setHeader(
+    //   "Access-Control-Allow-Methods",
+    //   "GET,POST,OPTIONS"
+    // );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", true);
+    res.setHeader("Access-Control-Allow-Private-Network", true);
+    //  Firefox caps this at 24 hours (86400 seconds). Chromium (starting in v76) caps at 2 hours (7200 seconds). The default value is 5 seconds.
+    res.setHeader("Access-Control-Max-Age", 7200);
   
-//     next();
-//   });
+    next();
+  });
 
 // CHQ: format of mongoDB connection string:
 // default database "test": prefix+suffix
@@ -87,9 +97,14 @@ app.use(cors(corsOptions));
 
 // works on my machine but not when deployed to onrender
 // mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET);
+
+
 mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error(err));
+
+// const myURI = process.env.MONGODB_CONNECTION_DEFAULT;
+
 
 
 // mongoose.connect(String(process.env.MONGODB_CHOSENDB_TARGET));
@@ -107,17 +122,24 @@ db.once('open', () => {
     console.log("Connected to MongoDB");
 });
 
-app.get('/mysecondtestpage', async (req,res) =>{
-    const randomString = Math.random().toString(36).substring(2,7); //[1]
+// Error: Failed to lookup view "index" in views directory "C:\Users\Chans\Downloads\Open Avenues Build\OA Build - Aug 2024\HW\HW final\formbuilderapp\formbuilder-server/views"
+// 500 Internal Server Error
+// app.get('/cheesey', (req, res) => {
+//   res.render('index', { title: 'My Express App' });
+// });
 
-    const theMyString = new User({
-        mystring: randomString
-    });
-    await theMyString.save();
-    // await user.updateOne("k", "k", "l")
+// CHQ: old test page for something just requiring a string
+// app.get('/mysecondtestpage', async (req,res) =>{
+//     const randomString = Math.random().toString(36).substring(2,7); //[1]
 
-    res.send("Hello");
-})
+//     const theMyString = new User({
+//         mystring: randomString
+//     });
+//     await theMyString.save();
+//     // await user.updateOne("k", "k", "l")
+
+//     res.send("Hello");
+// })
 app.get('/mytestpage', async (req, res)=>{
     // const nonhashedPass = "password"; // CHQ: for testing in case the hash causes issues
     const randomUsername = Math.random().toString(36).substring(2,7); //[1]
@@ -149,6 +171,9 @@ app.get('/mytestpage', async (req, res)=>{
 ,
 app.get('/', (req, res)=>{
     res.send('Hello from the MONGODB server of Conrad');
+})
+app.get('/givemeinfo', (req, res)=>{
+  res.send("process.env.MONGODB_CHOSENDB_TARGET" + " is of type " + typeof(process.env.MONGODB_CHOSENDB_TARGET));
 })
 
 app.post('/login', async (req, res) => {
