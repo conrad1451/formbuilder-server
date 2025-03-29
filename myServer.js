@@ -2,180 +2,225 @@
 // [1]: https://www.programiz.com/javascript/examples/generate-random-strings 
 // [2]: https://stackoverflow.com/questions/16743729/mongodb-find-if-a-collection-is-empty-node-js
 
-
-// source: https://gemini.google.com/app/5bede81cc8a65dac
-
 require('dotenv').config();
 const User = require("./models/Users");
-const MyModel = require("./models/TestModel") 
+const MyModel = require("./models/TestModel");
 
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
-// const Users = require('./models/Users');
-
 const helmet = require("helmet");
 
+const moment = require('moment-timezone');
+
+
+
+const ENVARS = {
+  HARDCODED_POSTING_TEST: process.env.MONGODB_CHOSENDB_TARGET,
+  LOCAL_FRONTEND: process.env.FRONTEND_ON_LOCALHOST,
+}
 
 app.use(helmet());
-// https://dev.to/mccauley/accepting-data-from-a-form-and-saving-it-to-mongodb-through-mongoose-47i3
-// app.use(express.urlencoded({extended: true}))
+app.use(express.json()); // Important: Add this line to parse JSON request bodies!
 
-//  📌 Set the view engine to ejs 
-// app.set("view engine", "ejs")
+app.set("view engine", "ejs");
+app.set('views', __dirname + '/views');
 
-// CHQ: not sure if I need the below line
-// app.use(cors())
+
+
+async function getUserWithFormattedTimestamps(userId) {
+  try {
+    const user = await User.findById(userId);
+
+    User.findOne
+
+    if (!user) {
+      return null; // User not found
+    }
+
+    const formattedCreatedAt = formatDate(user.createdAt);
+    const formattedUpdatedAt = formatDate(user.updatedAt);
+
+    return {
+      ...user.toObject(), // Convert Mongoose document to plain object
+      createdAt: formattedCreatedAt,
+      updatedAt: formattedUpdatedAt,
+    };
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    return null;
+  }
+}
+
+async function findUsersCreatedAfterYesterday() {
+  try {
+    const yesterday = moment().tz("America/New_York").subtract(1, 'days').startOf('day'); // NYC timezone
+    const users = await User.find({
+      createdAt: { $gt: yesterday.toDate() },
+      // createdAt: { $gt: ISODate("2025-03-19T00:00:00Z") },
+
+      // 
+    });
+    // console.log("Users created before yesterday:", users.map(user => user.username));
+
+    console.log("Users created before yesterday:", users.length);
+    return users;
+  } catch (error) {
+    console.error("Error finding users:", error);
+    return [];
+  }
+}
+
+async function listUsersCreatedToday() {
+  try {
+    const todayStart = moment().tz("UTC").startOf('day');
+    const todayEnd = moment().tz("UTC").endOf('day');
+
+    const users = await User.find({
+      createdAt: {
+        $gte: todayStart.toDate(),
+        $lte: todayEnd.toDate(),
+      },
+    });
+
+    const usernames = users.map(user => user.username);
+
+    console.log("Users created today:", usernames);
+    return usernames;
+  } catch (error) {
+    console.error("Error finding users:", error);
+    return [];
+  }
+}
+
+async function findUser(username) {
+  try {
+    const user = await User.findOne({ username: username });
+
+    if (user) {
+      console.log("User found:", user);
+      // Access user properties:
+      console.log("Username:", user.username);
+      console.log("Email:", user.email);
+      //Mongoose documents have extra functionality.
+    } else {
+      console.log("User not found.");
+    }
+  } catch (error) {
+    console.error("Error finding user:", error);
+  }
+}
+
+function formatDate(date) {
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "America/New_York",
+  };
+
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}
+
+// Example usage:
+async function test() {
+  try {
+    const user = await getUserWithFormattedTimestamps("gap0g");
+    if (user) {
+      console.log("User with formatted timestamps:", user);
+    } else {
+      console.log("User not found.");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+//test(); //uncomment to test.
+
 
 const corsOptions = {
-    origin: 'https://formbuilder-frontend.vercel.app/',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }
+    origin: ENVARS.LOCAL_FRONTEND,
+    optionsSuccessStatus: 200
+};
 
-// app.use(cors({
-//     origin: "https://localhost:3000" // Replace with your frontend origin
-//     // origin: "http://localhost:3000" // Replace with your frontend origin
-//   }));
+app.use(cors(corsOptions)); // Use cors with the specified options
 
-app.use(cors(corsOptions));
-
-// app.use((req, res, next) => {
-//     res.setHeader(
-//       "Access-Control-Allow-Origin",
-//       "https://react-api-use-test-2.vercel.app"
-//     );
-//     res.setHeader(
-//         "Access-Control-Allow-Origin",
-//         "https://localhost:3000/login"
-//         "http://localhost:3000/login"
-//       );
-//     res.setHeader(
-//       "Access-Control-Allow-Origin",
-//       "*"
-//     );
-//     //   res.setHeader(
-//     //   "Access-Control-Allow-Origin",
-//     //   *  
-//     // ); // resulted in "unexpected token"
-//     // res.setHeader(
-//     //   "Access-Control-Allow-Methods",
-//     //   "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
-//     // );
-//     res.setHeader(
-//       "Access-Control-Allow-Methods",
-//       "GET,POST,OPTIONS"
-//     );
-//     res.setHeader(
-//       "Access-Control-Allow-Headers",
-//       "Content-Type, Authorization, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-//     );
-//     res.setHeader("Access-Control-Allow-Credentials", true);
-//     res.setHeader("Access-Control-Allow-Private-Network", true);
-//     //  Firefox caps this at 24 hours (86400 seconds). Chromium (starting in v76) caps at 2 hours (7200 seconds). The default value is 5 seconds.
-//     res.setHeader("Access-Control-Max-Age", 7200);
-  
-//     next();
-//   });
-
-// CHQ: format of mongoDB connection string:
-// default database "test": prefix+suffix
-// specific database: prefix+"DBNAME"suffix
-// "DBNAME is a placeholder for the name of the database that you want to access"
-
-// mongoose.connect(process.env.MONGODB_CONNECTION_DEFAULT);
-
-// works on my machine but not when deployed to onrender
-// mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET);
-mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET)
+mongoose.connect(ENVARS.HARDCODED_POSTING_TEST)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error(err));
 
-
-// mongoose.connect(String(process.env.MONGODB_CHOSENDB_TARGET));
-
-// (node:42028) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
-// mongoose.connect(String(process.env.MONGODB_CHOSENDB_TARGET), {
-//   useNewUrlParser: "true",
-//   useUnifiedTopology: "true"
-// });
-
-const db = mongoose.connection; 
+const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
     console.log("Connected to MongoDB");
 });
 
-app.get('/mysecondtestpage', async (req,res) =>{
-    const randomString = Math.random().toString(36).substring(2,7); //[1]
+app.get('/willtestnow', async (req, res) => {
+  // test(); //uncomment to test.
+  // findUser("gap0g"); // Replace with an actual username
 
-    const theMyString = new User({
-        mystring: randomString
-    });
-    await theMyString.save();
-    // await user.updateOne("k", "k", "l")
+  // const myListOfUsers = findUsersCreatedAfterYesterday();
+  findUsersCreatedAfterYesterday();
+});
 
-    res.send("Hello");
-})
-app.get('/mytestpage', async (req, res)=>{
-    // const nonhashedPass = "password"; // CHQ: for testing in case the hash causes issues
-    const randomUsername = Math.random().toString(36).substring(2,7); //[1]
-    // const randomEmail = randomUsername + "@gmail.com";
+app.get('/listnewusers', async (req, res) => { 
+   listUsersCreatedToday();
+});
+
+
+app.get('/mytestpage', async (req, res) => {
+    const randomUsername = Math.random().toString(36).substring(2, 7);
     const randomEmail = String(randomUsername + "@gmail.com");
- 
     const randomPass = String(randomUsername + "pass");
- 
-    // const randomEmail = (Math.random().toString(36).substring(2,7);
 
     const user = new User({
         username: randomUsername,
         email: randomEmail,
-        // username: 'myusername',
-        // email: 'testuser@gmail.com',
-        password: randomPass
-        // password: hashedPass,
-        // password: "testpass",
+        password: randomPass,
     });
 
-    // save the user to the database -> THIS SAVES IT TO THE USER DATABASE
     await user.save();
-    // TypeError: user.insertOne is not a function
-    // await user.insertOne();
-    // await user.updateOne("k", "k", "l")
 
-    res.send("Added new user via get request (not the way to do it, lol)");
-})
-,
-app.get('/', (req, res)=>{
+    // GEmini claims that this plantext being sent by this server is being interpreted
+    // by the frontend as HTML - so any characters that could be interpreted as a script
+    // will cause the browser's security policy to block it. solution - return json
+    // res.send("Added new user via get request (not the way to do it, lol)");
+    res.json({ message: "User added successfully" });
+});
+
+app.get('/', (req, res) => {
     res.send('Hello from the MONGODB server of Conrad');
-})
+});
+
+app.get('/givemeinfo', (req, res) => {
+    res.send("process.env.MONGODB_CHOSENDB_TARGET" + " is of type " + typeof (process.env.MONGODB_CHOSENDB_TARGET));
+});
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-  
-    try {
-      const user = await User.findOne({ username  
-   });
-  
-      if (!user) {
-        return res.status(401).json({  
-   message: 'Invalid credentials' });
-      }
-  
-      // Replace with your password verification logic (e.g., bcrypt)
-      if (password !== user.password) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
-  
-      // Successful login, you can generate a token or session here
-      res.json({ message: 'Login successful' });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
 
-app.listen(process.env.PORT, () =>{
-    console.log(`server listening on port ${process.env.PORT}`)
-})
+    try {
+        const user = await User.findOne({ username });
+
+        if (!user) {
+          return res.status(401).json({ message: "User not found" });
+        }
+
+        if (password !== user.password) { // In a real application, use bcrypt to compare hashed passwords!
+          return res.status(401).json({ message: "Wrong password" });        
+        }
+
+        res.json({ message: 'Login successful' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+app.listen(process.env.PORT, () => {
+    console.log(`server listening on port ${process.env.PORT}`);
+});
+
