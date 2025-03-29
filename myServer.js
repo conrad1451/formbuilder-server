@@ -14,6 +14,13 @@ const helmet = require("helmet");
 
 const moment = require('moment-timezone');
 
+
+
+const ENVARS = {
+  HARDCODED_POSTING_TEST: process.env.MONGODB_CHOSENDB_TARGET,
+  LOCAL_FRONTEND: process.env.FRONTEND_ON_LOCALHOST,
+}
+
 app.use(helmet());
 app.use(express.json()); // Important: Add this line to parse JSON request bodies!
 
@@ -134,13 +141,13 @@ async function test() {
 
 
 const corsOptions = {
-    origin: 'http://localhost:3000', // Allow localhost:3000
+    origin: ENVARS.LOCAL_FRONTEND,
     optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions)); // Use cors with the specified options
 
-mongoose.connect(process.env.MONGODB_CHOSENDB_TARGET)
+mongoose.connect(ENVARS.HARDCODED_POSTING_TEST)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error(err));
 
