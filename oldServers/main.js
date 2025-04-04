@@ -2,7 +2,7 @@
 require('dotenv').config();
 
 const mongoose = require('mongoose');
-const { Student, Course, Teacher } = require('./models/model.js');
+const { Student, Course, Teacher } = require('../models/model.js');
 
 // Connecting to database
 // mongoose.connect('mongodb://localhost:27017/GFG',

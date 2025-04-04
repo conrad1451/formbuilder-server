@@ -3,15 +3,15 @@
 // [2]: https://stackoverflow.com/questions/16743729/mongodb-find-if-a-collection-is-empty-node-js
 
 require('dotenv').config();
-const User = require("./models/Users");
-const MyModel = require("./models/TestModel");
+const User = require("../models/Users");
+const MyModel = require("../models/TestModel");
 
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
-const jwt = require("jsonwebtoken"); // Import JWT
+// const jwt = require("jsonwebtoken"); // Import JWT
 
 const moment = require('moment-timezone');
 
@@ -178,7 +178,7 @@ app.get('/givemeinfo', (req, res) => {
   res.send("process.env.MONGODB_CHOSENDB_TARGET" + " is of type " + typeof (process.env.MONGODB_CHOSENDB_TARGET));
 });
 
-app.post('/login', async (req, res) => {
+app.post('/oldlogin', async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -193,7 +193,9 @@ app.post('/login', async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, ENVARS.JWT_SECRET, { expiresIn: '1h' }); // Adjust expiresIn as needed
+    // const token = jwt.sign({ userId: user._id }, ENVARS.JWT_SECRET, { expiresIn: '1h' }); // Adjust expiresIn as needed
+
+    const token = // token from descope
 
     res.json({ message: 'Login successful', token: token }); // Send token in response
   } catch (err) {

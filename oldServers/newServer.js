@@ -9,8 +9,8 @@ const express = require("express");
 const app = express(); 
 
 const helmet = require("helmet");
-const birds = require('./pageRoutes/birds')
-const myMongoDB = require('./pageRoutes/secondMongoServer')
+const birds = require('../pageRoutes/birds')
+const myMongoDB = require('../pageRoutes/secondMongoServer')
  
 app.use('/birds', birds)
 
