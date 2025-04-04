@@ -8,7 +8,8 @@ const descopeClient = DescopeClient({
 async function validateSession(req, res, next) {
     try {
         const sessionToken = req.headers.authorization?.split(' ')[1];
-        const authInfo = await descopeClient.validateSession(sessionToken); [(1)](https://docs.descope.com/getting-started/react/nodejs)
+        const authInfo = await descopeClient.validateSession(sessionToken); 
+        // [(1)](https://docs.descope.com/getting-started/react/nodejs)
         req.user = authInfo;
         next();
     } catch (error) {
