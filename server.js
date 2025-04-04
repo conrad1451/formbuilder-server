@@ -25,6 +25,7 @@ try {
 const ENVARS = {
   HARDCODED_POSTING_TEST: process.env.MONGODB_CHOSENDB_TARGET,
   LOCAL_FRONTEND: process.env.FRONTEND_ON_LOCALHOST,
+  MONGO_LOGIN: process.env.MONGODB_FORMBUILDER_LOGIN,
 };
 
 // Middleware setup
@@ -41,7 +42,8 @@ const corsOptions = {
   app.use(cors(corsOptions));
   
   // MongoDB connection
-  mongoose.connect(ENVARS.HARDCODED_POSTING_TEST)
+//   mongoose.connect(ENVARS.HARDCODED_POSTING_TEST)
+  mongoose.connect(ENVARS.MONGO_LOGIN)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error(err));
   
@@ -68,6 +70,9 @@ app.get('/protected', validateSession, async (req, res) => {
 
 // Legacy MongoDB auth routes
 app.post('/mongo-login', mongoAuth.login);
+
+app.post('/mongo-signup', mongoAuth.createUser);
+
 
 app.post('/mongo-register', mongoAuth.createUser);
 
