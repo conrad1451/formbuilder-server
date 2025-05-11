@@ -1,7 +1,7 @@
 {
   "name": "formbuilder-server",  
   "version": "1.0.0",
-  "description": "My Express.js server for serverless deployment", //Update this
+  "description": "My Express.js server for serverless deployment", 
   "main": "server.js",        
   "scripts": {
     "start": "node server.js",
